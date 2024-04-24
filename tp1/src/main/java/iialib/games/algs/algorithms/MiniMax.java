@@ -64,7 +64,21 @@ public class MiniMax<Move extends IMove,Role extends IRole,Board extends IBoard<
 		System.out.println("[MiniMax]");
 
 		Move bestMove = null;
-		// TODO
+		int bestScore = (playerRole == playerMaxRole) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+
+		for (Move move : board.possibleMoves(playerRole)) {
+			Board newBoard = board.play(move, playerRole);
+			int score = miniMax(newBoard, (playerRole == playerMaxRole) ? playerMinRole : playerMaxRole, depthMax - 1);
+
+			if (playerRole == playerMaxRole && score > bestScore) {
+				bestScore = score;
+				bestMove = move;
+			} else if (playerRole == playerMinRole && score < bestScore) {
+				bestScore = score;
+				bestMove = move;
+			}
+		}
+
 		return bestMove;
 	}
 
@@ -79,6 +93,24 @@ public class MiniMax<Move extends IMove,Role extends IRole,Board extends IBoard<
 	/*
 	 * PRIVATE METHODS ===============
 	 */
+	private int miniMax(Board board, Role playerRole, int depth) {
+		if (depth == 0 || board.isGameOver()) {
+			return h.eval(board, playerRole);
+		}
 
-	//TODO
+		int bestScore = (playerRole == playerMaxRole) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+
+		for (Move move : board.possibleMoves(playerRole)) {
+			Board newBoard = board.play(move, playerRole);
+			int score = miniMax(newBoard, (playerRole == playerMaxRole) ? playerMinRole : playerMaxRole, depth - 1);
+
+			if (playerRole == playerMaxRole && score > bestScore) {
+				bestScore = score;
+			} else if (playerRole == playerMinRole && score < bestScore) {
+				bestScore = score;
+			}
+		}
+
+		return bestScore;
+	}
 }
